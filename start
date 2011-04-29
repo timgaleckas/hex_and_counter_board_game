@@ -1,0 +1,4 @@
+#!/usr/bin/env script/runner
+
+hex_and_counter_board_game = HexAndCounterBoardGame.new
+hex_and_counter_board_game.show
