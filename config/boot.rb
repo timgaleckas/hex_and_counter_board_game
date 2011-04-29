@@ -5,7 +5,7 @@ Bundler.require(:default)
 
 require 'active_support/inflector'
 
-AUTOLOAD_PATHS = ['lib']
+AUTOLOAD_PATHS = ['./lib']
 
 AUTOLOAD_PATHS.each do |path|
   Dir.glob(path+'/**/*.rb').each do |ruby_file|
@@ -15,6 +15,7 @@ AUTOLOAD_PATHS.each do |path|
   end
 end
 
-Dir.glob('initializers/*.rb').each do |ruby_file|
-  require ruby_file
+Dir.glob('./initializers/*.rb').each do |ruby_file|
+  require_line = ruby_file.sub(/\.rb$/,'')
+  require require_line
 end
