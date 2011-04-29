@@ -7,7 +7,7 @@ class HexAndCounterBoardGame < Gosu::Window
     @input_handler = InputHandler.new(self)
     @hex_board     = HexBoard.new(  1000, 1000,    0, 0, 10, 15, 22, 100, 100, self)
     @hex_palette   = HexPalette.new( 800,  300, 1000, 50, 10, self)
-    @input_handler.register_input_client(@hex_board, :event=>:mouse_click)
+    @input_handler.register_input_client(@hex_board)
     @input_handler.register_input_client(@hex_palette)
   end
 

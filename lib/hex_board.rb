@@ -41,6 +41,10 @@ class HexBoard
   def mouse_click(opts)
     register_click(opts[:x],opts[:y])
   end
+  def mouse_double_click(opts)
+    register_click(opts[:x],opts[:y])
+    register_click(opts[:x],opts[:y])
+  end
 
   private
   def move_board_up!;    @y_offset -= [10,(@y_offset+y_overflow).abs].min; end
