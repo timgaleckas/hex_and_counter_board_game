@@ -1,7 +1,5 @@
 class InputHandler
   MOUSE_BUTTONS          = [Gosu::MsLeft,Gosu::MsMiddle,Gosu::MsRight]
-  CLICK_THRESHOLD        = 100
-  DOUBLE_CLICK_THRESHOLD = 300
   def initialize(window)
     @window         = window
     @input_clients  = []
@@ -21,32 +19,54 @@ class InputHandler
   end
 
   def update
+    @mouse_event = MouseEvent.new(@window)
     MOUSE_BUTTONS.each do |button|
       if @window.button_down?(button) && @down_events[button].nil?
         mouse_down!(button)
       elsif @down_events[button] && !@window.button_down?(button)
         mouse_up!(button)
-      elsif @click_events[button] && (Gosu::milliseconds - @click_events[button]) > DOUBLE_CLICK_THRESHOLD
+      elsif @click_events[button] && !MouseEvent.new(@window).within_double_click_threshold_of(@click_events[button])
         mouse_click!(button)
       end
     end
   end
 
   private
+  class MouseEvent
+    CLICK_TIME_THRESHOLD        = 101
+    DOUBLE_CLICK_TIME_THRESHOLD = 201
+
+    def initialize(window)
+      @milliseconds = Gosu::milliseconds
+      @x            = window.mouse_x
+      @y            = window.mouse_y
+    end
+
+    attr_reader :milliseconds, :x, :y
+
+    def within_click_threshold_of(mouse_event)
+      (self.milliseconds-mouse_event.milliseconds).abs <= CLICK_TIME_THRESHOLD
+    end
+    def within_double_click_threshold_of(mouse_event)
+      (self.milliseconds-mouse_event.milliseconds).abs <= DOUBLE_CLICK_TIME_THRESHOLD
+    end
+  end
+
+  attr_reader :mouse_event
 
   def mouse_down!(button)
     register_event(:mouse_down, {:button=>button,:x=>@window.mouse_x,:y=>@window.mouse_y} )
-    @down_events[button] = Gosu::milliseconds
+    @down_events[button] = mouse_event
   end
 
   def mouse_up!(button)
     register_event(:mouse_up, {:button=>button,:x=>@window.mouse_x,:y=>@window.mouse_y} )
-    if (Gosu::milliseconds - @down_events.delete(button)) < CLICK_THRESHOLD
+    if MouseEvent.new(@window).within_click_threshold_of(@down_events.delete(button))
       if @click_events[button]
         mouse_double_click!(button)
         @click_events[button] = nil
       else
-        @click_events[button] = Gosu::milliseconds
+        @click_events[button] = mouse_event
       end
     end
   end
