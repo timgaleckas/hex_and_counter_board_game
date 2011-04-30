@@ -18,9 +18,11 @@ class ResourceBundle
       @hex_tiles = square_tiles.map{ |tile| tile.mask(@window,hex_overlay,mask) }
     end
 
-    def hex_overlay; @hex_overlay ||= Magick::Image.read(      'resources/images/hex_outline.png').first; end
-    def mask;        @mask        ||= Magick::Image.read(       'resources/images/hex_mask.png').first;   end
-    def background;  @background  ||= Gosu::Image.new(@window, 'resources/images/background.png', true);  end
-    def cursor;      @cursor      ||= Gosu::Image.new(@window, 'resources/images/cursor.png');            end
+    def hex_overlay;     @hex_overlay  ||= Magick::Image.read(      'resources/images/hex_outline.png').first; end
+    def hex_check_box;   @hex_uncheck  ||= Gosu::Image.new(@window, 'resources/images/hex_check_box.png');     end
+    def hex_uncheck_box; @hex_check    ||= Gosu::Image.new(@window, 'resources/images/hex_uncheck_box.png');   end
+    def mask;            @mask         ||= Magick::Image.read(      'resources/images/hex_mask.png').first;    end
+    def background;      @background   ||= Gosu::Image.new(@window, 'resources/images/background.png', true);  end
+    def cursor;          @cursor       ||= Gosu::Image.new(@window, 'resources/images/cursor.png');            end
   end
 end

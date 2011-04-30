@@ -1,7 +1,8 @@
-class HexBoard
+class HexBoard < Widget
   def initialize(width,height,x,y,z,columns,rows,hex_width,hex_height,window)
-    @width, @height, @x, @y, @z, @columns, @rows, @hex_width, @hex_height, @window = 
-     width,  height,  x,  y,  z,  columns,  rows,  hex_width,  hex_height,  window
+    super(x,y,z,width,height,window)
+    @columns, @rows, @hex_width, @hex_height =
+     columns,  rows,  hex_width,  hex_height
     @hexes = Array.new(@rows)
     (0..(@rows-1)).each do |row|
       @hexes[row]=Array.new(@columns)
@@ -16,14 +17,11 @@ class HexBoard
   end
 
   attr_accessor :hexes
-  attr_reader   :x, :y, :z, :width, :height
 
-  def draw
-    @window.clip_to(@x, @y, @width, @height) do
-      b=ResourceBundle.background
-      b.draw(@x,@y,@z,@width.to_f/b.width, @height.to_f/b.height)
-      hexes.flatten.compact.each{|hex|hex.draw(@x+@x_offset,@y+@y_offset)}
-    end
+  def clipped_draw
+    b=ResourceBundle.background
+    b.draw(@x,@y,@z,@width.to_f/b.width, @height.to_f/b.height)
+    hexes.flatten.compact.each{|hex|hex.draw(@x+@x_offset,@y+@y_offset)}
   end
 
   def update
@@ -43,7 +41,6 @@ class HexBoard
   end
   def mouse_double_click(opts)
     register_click(opts[:x],opts[:y])
-    register_click(opts[:x],opts[:y])
   end
 
   private
@@ -59,7 +56,7 @@ class HexBoard
 
   def register_click(x,y)
     hex = hex_at(x,y)
-    hex.register_click if hex
+    hex.state = @window.hex_palette.state_selected if hex && @window.hex_palette.state_selected
   end
 
   def hex_at(x,y)

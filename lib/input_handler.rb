@@ -15,7 +15,11 @@ class InputHandler
     h = opts[:height] || client.height
     e = opts[:event]  || :all
     @input_clients << [x,y,x+w,y+h,z,client,e]
-    @input_clients = @input_clients.sort_by{|record|record[4]}
+    @input_clients = @input_clients.sort_by{|record|record[3]}
+  end
+
+  def deregister_clients(*clients)
+    @input_clients.reject!{|record| clients.include?(record[5]) }
   end
 
   def update
@@ -33,7 +37,7 @@ class InputHandler
 
   private
   class MouseEvent
-    CLICK_TIME_THRESHOLD        = 101
+    CLICK_TIME_THRESHOLD        = 121
     DOUBLE_CLICK_TIME_THRESHOLD = 201
 
     def initialize(window)

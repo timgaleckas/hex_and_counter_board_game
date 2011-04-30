@@ -6,10 +6,12 @@ class HexAndCounterBoardGame < Gosu::Window
     ResourceBundle.load(self,tile_set)
     @input_handler = InputHandler.new(self)
     @hex_board     = HexBoard.new(  1000, 1000,    0, 0, 10, 15, 22, 100, 100, self)
-    @hex_palette   = HexPalette.new( 800,  300, 1000, 50, 10, self)
+    @hex_palette   = HexPalette.new( 1000, 50, 10, 800,  300, self)
     @input_handler.register_input_client(@hex_board)
     @input_handler.register_input_client(@hex_palette)
   end
+
+  attr_reader :input_handler, :hex_palette
 
   def draw
     ResourceBundle.cursor.draw(self.mouse_x,self.mouse_y,999)
