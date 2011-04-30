@@ -1,6 +1,6 @@
 source :rubygems
 
-gem "rmagick"
+gem "chunky_png"
 gem "gosu"
 gem "i18n"
 gem "activesupport"
@@ -9,3 +9,4 @@ if RUBY_VERSION < '1.9'
 else
     gem 'ruby-debug19'
 end
+gem 'rmagick', :group => :resource_builder

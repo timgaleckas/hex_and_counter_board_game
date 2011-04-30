@@ -42,8 +42,8 @@ class InputHandler
 
     def initialize(window)
       @milliseconds = Gosu::milliseconds
-      @x            = window.mouse_x
-      @y            = window.mouse_y
+      @x            = window.mouse_x.floor
+      @y            = window.mouse_y.floor
     end
 
     attr_reader :milliseconds, :x, :y
@@ -59,12 +59,12 @@ class InputHandler
   attr_reader :mouse_event
 
   def mouse_down!(button)
-    register_event(:mouse_down, {:button=>button,:x=>@window.mouse_x,:y=>@window.mouse_y} )
+    register_event(:mouse_down, {:button=>button,:x=>mouse_event.x,:y=>mouse_event.y} )
     @down_events[button] = mouse_event
   end
 
   def mouse_up!(button)
-    register_event(:mouse_up, {:button=>button,:x=>@window.mouse_x,:y=>@window.mouse_y} )
+    register_event(:mouse_up, {:button=>button,:x=>mouse_event.x,:y=>mouse_event.y} )
     if MouseEvent.new(@window).within_click_threshold_of(@down_events.delete(button))
       if @click_events[button]
         mouse_double_click!(button)
@@ -76,12 +76,12 @@ class InputHandler
   end
 
   def mouse_click!(button)
-    register_event(:mouse_click, {:button=>button,:x=>@window.mouse_x,:y=>@window.mouse_y} )
+    register_event(:mouse_click, {:button=>button,:x=>mouse_event.x,:y=>mouse_event.y} )
     @click_events[button] = nil
   end
 
   def mouse_double_click!(button)
-    register_event(:mouse_double_click, {:button=>button,:x=>@window.mouse_x,:y=>@window.mouse_y} )
+    register_event(:mouse_double_click, {:button=>button,:x=>mouse_event.x,:y=>mouse_event.y} )
   end
 
   def register_event(event, opts={})

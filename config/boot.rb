@@ -1,6 +1,7 @@
 require "rubygems"
 require "bundler"
 
+Bundler.setup(:default)
 Bundler.require(:default)
 
 require 'active_support/inflector'

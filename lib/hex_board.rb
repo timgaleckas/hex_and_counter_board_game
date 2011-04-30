@@ -59,6 +59,10 @@ class HexBoard < Widget
     hex.state = @window.hex_palette.state_selected if hex && @window.hex_palette.state_selected
   end
 
+  def r(p); ChunkyPNG::Color.r(p); end
+  def g(p); ChunkyPNG::Color.g(p); end
+  def b(p); ChunkyPNG::Color.b(p); end
+
   def hex_at(x,y)
     relative_x           = x - @x - @x_offset
     relative_y           = y - @y - @y_offset
@@ -67,20 +71,20 @@ class HexBoard < Widget
     row    = ( (relative_y - offset_due_to_column) / row_height  ).floor
     x_in_tile = relative_x - (column*column_width)
     y_in_tile = relative_y - ((row*row_height)+offset_due_to_column)
-    pixel = ResourceBundle.mask.get_pixels(x_in_tile,y_in_tile,1,1)[0]
-    if pixel.red      == 255 && pixel.green == 255
+    pixel = ResourceBundle.mask.get_pixel(x_in_tile,y_in_tile)
+    if r(pixel)     == 255 && g(pixel) == 255
       #bottom left
       column -= 1
       row += 1 if !column.even?
-    elsif pixel.red   == 255
+    elsif r(pixel)  == 255
       #top left
       column -= 1
       row -= 1 if column.even?
-    elsif pixel.green == 255
+    elsif g(pixel)  == 255
       #bottom right
       column += 1
       row += 1 if !column.even?
-    elsif pixel.blue  == 255
+    elsif b(pixel)  == 255
       #top right
       column += 1
       row -= 1 if column.even?
