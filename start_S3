@@ -1,10 +1,5 @@
 #!/usr/bin/env script/runner
 
-hex_and_counter_board_game = HexAndCounterBoardGame.new(:tile_set=>'S3',:rows=>21,:columns=>21)
-hex_and_counter_board_game.instance_variable_get('@hex_board').hexes.each_with_index do |row,row_index|
-  row.each_with_index do |hex, column_index|
-    hex && hex.state = row_index*row.size+column_index
-  end
-end
+hex_and_counter_board_game = HexAndCounterBoardGame.new(:tile_set=>'S3',:rows=>21,:columns=>21, :initial_hex_state=>:rolling)
 hex_and_counter_board_game.show
 

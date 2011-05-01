@@ -1,6 +1,6 @@
 class HexBoard < Widget
   include ResourceBundle
-  def initialize(width,height,x,y,z,columns,rows,window)
+  def initialize(width,height,x,y,z,columns,rows,window, initial_hex_state)
     super(x,y,z,width,height,window)
     @columns, @rows =
      columns,  rows
@@ -10,7 +10,10 @@ class HexBoard < Widget
       (0..(@columns-1)).each do |column|
         x = column*column_width
         y = (row*row_height)+(((column%2)!=0) ? 0 : row_height/2)
-        @hexes[row][column] = HexSpace.new(self, x, y, @z+1, 0) unless row==@rows-1 && (column%2)==0
+        state = (initial_hex_state == :rolling) ?
+          row*columns+column :
+          initial_hex_state
+        @hexes[row][column] = HexSpace.new(self, x, y, @z+1, state) unless row==@rows-1 && (column%2)==0
       end
     end
     @x_offset = x_overflow ? -1 * x_overflow/2 : 0

@@ -1,16 +1,17 @@
 class HexAndCounterBoardGame < Gosu::Window
   def initialize(options={})
     options = {
-      :tile_set => "default",
-      :columns  => 15,
-      :rows     => 22
+      :tile_set          => "default",
+      :columns           => 15,
+      :rows              => 22,
+      :initial_hex_state => 0
     }.merge(options)
     @width, @height = 1800, 1000
     super(@width, @height, false)
     self.caption = "Hex-and-Counter Board"
     ResourceBundle.load(self,options[:tile_set])
     @input_handler = InputHandler.new(self)
-    @hex_board     = HexBoard.new(  1000, 1000,    0, 0, 10, options[:columns], options[:rows], self)
+    @hex_board     = HexBoard.new(  1000, 1000,    0, 0, 10, options[:columns], options[:rows], self, options[:initial_hex_state])
     @hex_palette   = HexPalette.new( 1000, 50, 10, 800,  300, self)
     @input_handler.register_input_client(@hex_board)
     @input_handler.register_input_client(@hex_palette)
