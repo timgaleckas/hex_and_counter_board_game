@@ -90,7 +90,7 @@ class ResourceBuilder
       window       = Gosu::Window.new(1,1,1)
       mask         = find_or_create_hex_mask
       hex_overlay  = find_or_create_hex_overlay
-      hexes        = Image.read("#{TILE_SET_DIR}/#{tile_set_name}/hexes.png").first
+      hexes        = tile_set_name.is_a?(String) ? Image.read("#{TILE_SET_DIR}/#{tile_set_name}/hexes.png").first : tile_set_name
       new_hexes    = ImageList.new
       square_tiles = Gosu::Image.load_tiles(window, hexes, HEX_WIDTH, HEX_HEIGHT, true)
       hex_tiles    = square_tiles.map{ |tile| tile.mask(window,hex_overlay,mask) }
@@ -104,11 +104,15 @@ class ResourceBuilder
         end
         new_hexes << hex_row.append(false)
       end
-      new_hexes.append(true).write("#{TILE_SET_DIR}/#{tile_set_name}/hexes.png")
+      new_hexes = new_hexes.append(true)
+      if tile_set_name.is_a?(String)
+        new_hexes.write("#{TILE_SET_DIR}/#{tile_set_name}/hexes.png")
+      end
+      new_hexes
     end
 
     def create_or_clean_tile_set(tile_set_name)
-      if !File.exists?("#{TILE_SET_DIR}/#{tile_set_name}/hexes.png")
+      if tile_set_name.is_a?(String) && !File.exists?("#{TILE_SET_DIR}/#{tile_set_name}/hexes.png")
         write_tile_set_hexes(tile_set_name,9,'#c4da6b','#456c4b')
       end
       clean_hexes(tile_set_name)
@@ -122,16 +126,28 @@ class ResourceBuilder
     end
 
 
-    def create_hexes_from_map(r,x1,y1,x2,y2,w,h,first_row_short,file_name,tile_set_name)
+    def create_hexes_from_map(options={})
+      display       = options[:display]
+      file_name     = options[:file_name]
+      tile_set_name = options[:tile_set_name]
+      raise 'required' if file_name.nil?
+      r =  options[:rotation]     || 0
+      x1 = options[:trim_left]    || 0
+      y1 = options[:trim_top]     || 0
+      x2 = options[:trim_right]   || 0
+      y2 = options[:trim_bottom]  || 0
+      w =  options[:hex_width]    || 100
+      h =  options[:hex_height]   || 100
+      first_row_short = options[:first_row_short] #the first row of tiles starts off _-_-_ instead of -_-_-_
       image = Image.read(file_name).first.rotate!(r)
       image.crop!(x1,y1,image.columns-x1-x2,image.rows-y1-y2)
       tiles = ImageList.new
       current_y = 0
-      while current_y+h < image.rows
+      while current_y+h < image.rows+10
         row = ImageList.new
         current_x = 0
         y_offset = first_row_short
-        while current_x+w < image.columns
+        while current_x+w < image.columns+10
           row << image.excerpt(current_x,current_y+(y_offset ? h/2 : 0),w,h).resize!(100,100)
           current_x += 0.76*w
           y_offset = !y_offset
@@ -139,8 +155,15 @@ class ResourceBuilder
         tiles << row.append(false)
         current_y += h
       end
-      FileUtils.mkdir_p("#{TILE_SET_DIR}/#{tile_set_name}")
-      tiles.append(true).write("#{TILE_SET_DIR}/#{tile_set_name}/hexes.png")
+      hexes = tiles.append(true)
+      if display
+        hexes.display
+      end
+      if tile_set_name
+        FileUtils.mkdir_p("#{TILE_SET_DIR}/#{tile_set_name}")
+        hexes.write("#{TILE_SET_DIR}/#{tile_set_name}/hexes.png")
+      end
+      hexes
     end
   end
 end

@@ -1,0 +1,15 @@
+#!/usr/bin/env script/runner
+
+Bundler.require(:resource_builder)
+hexes = ResourceBuilder.create_hexes_from_map(
+  :trim_left       => 17,
+  :trim_right      => 21,
+  :hex_width       => 69,
+  :hex_height      => 60,
+  :first_row_short => true,
+  :file_name       => "resources/scanned_maps/O1.JPG",
+  #:display_only    => true,
+  :tile_set_name   => 'O1'
+)
+#ResourceBuilder.create_or_clean_tile_set(hexes).display
+ResourceBuilder.create_or_clean_tile_set('O1')

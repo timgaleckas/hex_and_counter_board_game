@@ -44,15 +44,15 @@ class HexBoard < Widget
   end
 
   private
-  def move_board_up!;    @y_offset -= [10,(@y_offset+y_overflow).abs].min; end
-  def move_board_down!;  @y_offset += [10,@y_offset.abs].min;              end
-  def move_board_left!;  @x_offset -= [10,(@x_offset+x_overflow).abs].min; end
-  def move_board_right!; @x_offset += [10,@x_offset.abs].min;              end
+  def move_board_up!;    @y_offset -= [10,(@y_offset+y_overflow).abs].min if y_overflow > 0; end
+  def move_board_down!;  @y_offset += [10,@y_offset.abs].min              if y_overflow > 0; end
+  def move_board_left!;  @x_offset -= [10,(@x_offset+x_overflow).abs].min if x_overflow > 0; end
+  def move_board_right!; @x_offset += [10,@x_offset.abs].min              if x_overflow > 0; end
 
   def column_width;      ((@hex_width*3)/4)-3;                             end
   def row_height;        @hex_height-3;                                    end
-  def x_overflow;  [0,(@columns*column_width)+(@hex_width/4)-@width ].max; end
-  def y_overflow;  [0,(@rows   *row_height  )               -@height].max; end
+  def x_overflow;  (@columns*column_width)+(@hex_width/4)-@width; end
+  def y_overflow;  (@rows   *row_height  )               -@height; end
 
   def register_click(x,y)
     hex = hex_at(x,y)

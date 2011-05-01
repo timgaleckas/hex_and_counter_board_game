@@ -2,15 +2,15 @@
 
 Bundler.require(:resource_builder)
 ResourceBuilder.create_hexes_from_map(
-  0.3,  #rotate twisted scan
-  22,   #cut off left
-  25,   #cut off top
-  17,   #cut off right
-  23,   #cut off bottom
-  66,   #width of hexes
-  58,   #height of hexes
-  true, #the first row of tiles starts off _-_-_ instead of -_-_-_
-  "resources/scanned_maps/S3.JPG",    #orignal scanned map
-  'S3'  #name of tile set to create
+  :rotation        => 0.3,
+  :trim_left       => 22,
+  :trim_top        => 25,
+  :trim_right      => 17,
+  :trim_bottom     => 23,
+  :hex_width       => 66,
+  :hex_height      => 58,
+  :first_row_short => true,
+  :file_name       => "resources/scanned_maps/S3.JPG",
+  :tile_set_name   => 'S3'
 )
 ResourceBuilder.create_or_clean_tile_set('S3')
