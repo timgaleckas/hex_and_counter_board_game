@@ -10,7 +10,7 @@ class HexAndCounterBoardGame < Gosu::Window
     self.caption = "Hex-and-Counter Board"
     ResourceBundle.load(self,options[:tile_set])
     @input_handler = InputHandler.new(self)
-    @hex_board     = HexBoard.new(  1000, 1000,    0, 0, 10, options[:columns], options[:rows], 100, 100, self)
+    @hex_board     = HexBoard.new(  1000, 1000,    0, 0, 10, options[:columns], options[:rows], self)
     @hex_palette   = HexPalette.new( 1000, 50, 10, 800,  300, self)
     @input_handler.register_input_client(@hex_board)
     @input_handler.register_input_client(@hex_palette)

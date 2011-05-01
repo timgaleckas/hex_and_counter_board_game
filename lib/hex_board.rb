@@ -1,8 +1,9 @@
 class HexBoard < Widget
-  def initialize(width,height,x,y,z,columns,rows,hex_width,hex_height,window)
+  include ResourceBundle
+  def initialize(width,height,x,y,z,columns,rows,window)
     super(x,y,z,width,height,window)
-    @columns, @rows, @hex_width, @hex_height =
-     columns,  rows,  hex_width,  hex_height
+    @columns, @rows =
+     columns,  rows
     @hexes = Array.new(@rows)
     (0..(@rows-1)).each do |row|
       @hexes[row]=Array.new(@columns)
@@ -49,9 +50,9 @@ class HexBoard < Widget
   def move_board_left!;  @x_offset -= [10,(@x_offset+x_overflow).abs].min if x_overflow > 0; end
   def move_board_right!; @x_offset += [10,@x_offset.abs].min              if x_overflow > 0; end
 
-  def column_width;      ((@hex_width*3)/4)-3;                             end
-  def row_height;        @hex_height-3;                                    end
-  def x_overflow;  (@columns*column_width)+(@hex_width/4)-@width; end
+  def column_width;      ((HEX_WIDTH*3)/4)-3;                      end
+  def row_height;        HEX_HEIGHT-3;                             end
+  def x_overflow;  (@columns*column_width)+(HEX_WIDTH/4)-@width;   end
   def y_overflow;  (@rows   *row_height  )               -@height; end
 
   def register_click(x,y)
