@@ -1,0 +1,10 @@
+tmp/*
+*~
+*.diff
+*.swp
+*.swo
+*.DS_Store
+*.tmproj
+
+.bundle
+.rvmrc

@@ -120,5 +120,27 @@ class ResourceBuilder
     def find_or_create_hex_overlay
       begin; Image.read('resources/images/hex_overlay.png').first; rescue; create_hex_overlay; end
     end
+
+
+    def create_hexes_from_map(r,x1,y1,x2,y2,w,h,first_row_short,file_name,tile_set_name)
+      image = Image.read(file_name).first.rotate!(r)
+      image.crop!(x1,y1,image.columns-x1-x2,image.rows-y1-y2)
+      tiles = ImageList.new
+      current_y = 0
+      while current_y+h < image.rows
+        row = ImageList.new
+        current_x = 0
+        y_offset = first_row_short
+        while current_x+w < image.columns
+          row << image.excerpt(current_x,current_y+(y_offset ? h/2 : 0),w,h).resize!(100,100)
+          current_x += 0.76*w
+          y_offset = !y_offset
+        end
+        tiles << row.append(false)
+        current_y += h
+      end
+      FileUtils.mkdir_p("#{TILE_SET_DIR}/#{tile_set_name}")
+      tiles.append(true).write("#{TILE_SET_DIR}/#{tile_set_name}/hexes.png")
+    end
   end
 end

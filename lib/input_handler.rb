@@ -2,9 +2,20 @@ class InputHandler
   MOUSE_BUTTONS          = [Gosu::MsLeft,Gosu::MsMiddle,Gosu::MsRight]
   def initialize(window)
     @window         = window
-    @input_clients  = []
+    @input_clients  = SortedSet.new
     @down_events    = {}
     @click_events   = {}
+  end
+
+  class InputClientRecord
+    def initialize(x1,y1,x2,y2,z,client,e)
+      @x1, @y1, @x2, @y2, @z, @client, @e =
+       x1,  y1,  x2,  y2,  z,  client,  e
+    end
+    attr_reader :x1, :y1, :x2, :y2, :z, :client, :e
+    def <=>(other)
+      other.z <=> self.z
+    end
   end
 
   def register_input_client(client,opts={})
@@ -14,12 +25,11 @@ class InputHandler
     w = opts[:width]  || client.width
     h = opts[:height] || client.height
     e = opts[:event]  || :all
-    @input_clients << [x,y,x+w,y+h,z,client,e]
-    @input_clients = @input_clients.sort_by{|record|record[3]}
+    @input_clients << InputClientRecord.new(x,y,x+w,y+h,z,client,e)
   end
 
   def deregister_clients(*clients)
-    @input_clients.reject!{|record| clients.include?(record[5]) }
+    @input_clients.reject!{|record| clients.include?(record.client) }
   end
 
   def update
@@ -88,7 +98,7 @@ class InputHandler
     x = opts[:x]
     y = opts[:y]
     @input_clients.each do |i|
-      x1,y1,x2,y2,z,client,accepted_event = *i
+      x1,y1,x2,y2,z,client,accepted_event = i.x1, i.y1, i.x2, i.y2, i.z, i.client, i.e
       if x1 < x && x2 > x && y1 < y && y2 > y && (accepted_event==event||accepted_event==:all) && client.respond_to?(event)
         return if client.send(event,opts)
       end

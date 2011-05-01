@@ -1,0 +1,16 @@
+#!/usr/bin/env script/runner
+
+Bundler.require(:resource_builder)
+ResourceBuilder.create_hexes_from_map(
+  0.3,  #rotate twisted scan
+  22,   #cut off left
+  25,   #cut off top
+  17,   #cut off right
+  23,   #cut off bottom
+  66,   #width of hexes
+  58,   #height of hexes
+  true, #the first row of tiles starts off _-_-_ instead of -_-_-_
+  "resources/scanned_maps/S3.JPG",    #orignal scanned map
+  'S3'  #name of tile set to create
+)
+ResourceBuilder.create_or_clean_tile_set('S3')
