@@ -40,10 +40,7 @@ class HexBoard < Widget
     move_board_up!    if @window.mouse_y > @y + @height - border_width
   end
 
-  def mouse_click(opts)
-    register_click(opts[:x],opts[:y])
-  end
-  def mouse_double_click(opts)
+  def mouse_down(opts)
     register_click(opts[:x],opts[:y])
   end
 
