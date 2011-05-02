@@ -9,8 +9,9 @@ class HexPalette < Widget
     attr_accessor :selected
     attr_reader   :palette, :state
     def clipped_draw
-      @selected ? ResourceBundle.hex_check_box.draw(x,y,z) :
-                  ResourceBundle.hex_uncheck_box.draw(x,y,z)
+      ResourceBundle.hex_tiles[state].draw(x,y,z)
+      @selected ? ResourceBundle.hex_check_box.draw(x,y,z+1) :
+                  ResourceBundle.hex_uncheck_box.draw(x,y,z+1)
     end
     def mouse_down(opts)
       palette.clear_selection
@@ -18,24 +19,21 @@ class HexPalette < Widget
       true
     end
   end
-  attr_reader :hexes, :hex_selectors
   def clipped_draw
     b=ResourceBundle.background
     b.draw(x,y,z,width.to_f/b.width, height.to_f/b.height)
-    hexes.each{|hex|hex.draw(0,0)}
-    @hex_selectors.each{|selector|selector.draw}
+    hex_selectors.each{|selector|selector.draw}
   end
   def update
-    @hexes = nil if hexes.size != ResourceBundle.hex_tiles.size
+    @hex_selectors = nil if hex_selectors && hex_selectors.size != ResourceBundle.hex_tiles.size
   end
   def clear_selection; hex_selectors.each  {|hs|hs.selected = false}; end
   def state_selected;  hex_selectors.detect{|hs|hs.selected};         end
-  def hexes
-    return @hexes if @hexes
+  def hex_selectors
+    return @hex_selectors if @hex_selectors
     number_of_hexes_per_row = (width / (HEX_WIDTH + 20)).floor
     xs = (1..number_of_hexes_per_row-1).map{|n| (((n.to_f/number_of_hexes_per_row)*width)-(HEX_WIDTH/2)).floor}
     xs = xs.map{|an_x|an_x+x}
-    @hexes = []
     @window.input_handler.deregister_clients(*@hex_selectors) if @hex_selectors
     @hex_selectors = []
     palette = self
@@ -47,12 +45,11 @@ class HexPalette < Widget
         current_y += 20+HEX_HEIGHT
       end
       current_x      =  xs[x_index]
-      @hexes         << HexSpace.new(nil,current_x,current_y,z+1,index)
       selector       =  Selector.new(    current_x,current_y,z+2,HEX_WIDTH,HEX_HEIGHT, window, self, index)
       window.input_handler.register_input_client(selector)
       @hex_selectors << selector
       x_index += 1
     end
-    @hexes
+    @hex_selectors
   end
 end
