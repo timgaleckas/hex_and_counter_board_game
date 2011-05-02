@@ -113,7 +113,7 @@ class ResourceBuilder
 
     def create_or_clean_tile_set(tile_set_name)
       if tile_set_name.is_a?(String) && !File.exists?("#{TILE_SET_DIR}/#{tile_set_name}/hexes.png")
-        write_tile_set_hexes(tile_set_name,9,'#c4da6b','#456c4b')
+        write_tile_set_hexes(tile_set_name,15,'#c4da6b','#456c4b')
       end
       clean_hexes(tile_set_name)
     end

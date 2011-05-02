@@ -1,6 +1,6 @@
 module ResourceBundle
-  HEX_WIDTH      = 100
-  HEX_HEIGHT     = 100
+  HEX_WIDTH      = 80
+  HEX_HEIGHT     = 80
   COUNTER_WIDTH  = 48
   COUNTER_HEIGHT = 48
   IMAGES_DIR   = 'resources/images'
