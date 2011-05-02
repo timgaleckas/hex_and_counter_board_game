@@ -1,10 +1,11 @@
 class HexPalette < Widget
   class Selector < Widget
-    def initialize(*args)
-      @state    = args.pop
-      @palette  = args.pop
-      @selected = false
-      super(*args)
+    def initialize(x,y,z,width,height,window,options={})
+      @state, @palette, @selected = 
+        options.delete(:state),
+        options.delete(:palette),
+        !!options.delete(:selected)
+      super
     end
     attr_accessor :selected
     attr_reader   :palette, :state
@@ -45,7 +46,7 @@ class HexPalette < Widget
         current_y += 20+HEX_HEIGHT
       end
       current_x      =  xs[x_index]
-      selector       =  Selector.new(    current_x,current_y,z+2,HEX_WIDTH,HEX_HEIGHT, window, self, index)
+      selector       =  Selector.new(    current_x,current_y,z+2,HEX_WIDTH,HEX_HEIGHT, window, :palette=>self, :state=>index)
       window.input_handler.register_input_client(selector)
       @hex_selectors << selector
       x_index += 1

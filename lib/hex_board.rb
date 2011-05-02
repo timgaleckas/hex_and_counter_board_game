@@ -1,10 +1,11 @@
 class HexBoard < Widget
   include ResourceBundle
-  def initialize(x,y,z,width,height,columns,rows,window, initial_hex_state)
-    super(x,y,z,width,height,window)
-    @columns, @rows =
-      columns,  rows
-    HexSpace.initial_hex_state = initial_hex_state
+  def initialize(x,y,z,width,height,window,options={})
+    @columns, @rows, HexSpace.initial_hex_state =
+      options.delete(:columns),
+      options.delete(:rows),
+      options.delete(:initial_hex_state)
+    super
     @hexes = Array.new(@rows)
     (0..(@rows-1)).each { |row| build_row(row) }
     @x_offset = x_overflow ? -1 * x_overflow/2 : 0
@@ -21,7 +22,7 @@ class HexBoard < Widget
   def build_column_for_row(column, row)
     x = column*column_width
     y = (row*row_height)+(((column%2)!=0) ? 0 : row_height/2)
-    hex_space = HexSpace.new(self, x, y, @z+1)
+    hex_space = HexSpace.new(x, y, @z+1,HEX_WIDTH,HEX_HEIGHT,window,:board=>self)
     @hexes[row][column] = hex_space unless row==@rows-1 && (column%2)==0
   end
   def clipped_draw

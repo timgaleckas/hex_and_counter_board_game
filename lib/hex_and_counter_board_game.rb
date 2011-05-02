@@ -9,15 +9,21 @@ class HexAndCounterBoardGame < Gosu::Window
     @width, @height = Gosu.screen_width, Gosu.screen_height
     super(@width, @height, true)
     self.caption = "Hex-and-Counter Board"
-    ResourceBundle.load(self,options[:tile_set])
+    ResourceBundle.load(self,options.delete(:tile_set))
     @input_handler = InputHandler.new(self)
-    @hex_board     = HexBoard.new(    0, 25, 10, @width-600, @height-25, options[:columns], options[:rows], self, options[:initial_hex_state])
+    @hex_board     = HexBoard.new(    0, 25, 10, @width-600, @height-25, self, options)
+    @menu          = Menu.new(        @width-600,  25,  99, 600,   25, self)
     @close_button  = CloseButton.new( @width -25,  25,  10,  25,   25, self)
-    @hex_palette   = HexPalette.new(  @width-600,  50,  10, 600,  375, self)
+    @hex_palette   = HexPalette.new(  @width-600,  50,  10, 600,  375, self, :options=>menu_options)
     @counter_tray  = CounterTray.new( @width-600, 425,  10, 600,  @height-425, self)
     @input_handler.register_input_client(@close_button)
     @input_handler.register_input_client(@hex_board)
     @input_handler.register_input_client(@hex_palette)
+  end
+
+  def menu_options
+    { :tile_sets => ['default'], :piece_sets => ['default'],
+      :exit => nil }
   end
 
   attr_reader :input_handler, :hex_palette

@@ -1,6 +1,6 @@
 class Widget
   include ResourceBundle
-  def initialize(x,y,z,width,height,window)
+  def initialize(x,y,z,width,height,window,options={})
     @x, @y, @z, @width, @height, @window =
      x,  y,  z,  width,  height,  window
   end

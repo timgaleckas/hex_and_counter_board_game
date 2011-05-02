@@ -1,14 +1,15 @@
-class HexSpace
+class HexSpace < Widget
   class<<self
     attr_accessor :initial_hex_state
     attr_accessor :current_rolling_value
   end
-  attr_reader :board, :x, :y, :z
+  attr_reader :board
+  attr_writer :state
 
-  def initialize(board, x, y, z, specified_initial_state = nil)
-    @board, @x, @y, @z = 
-     board,  x,  y,  z
-    @state = specified_initial_state || initial_state
+  def initialize(x,y,z,width,height,window,options={})
+    @board = options.delete(:board)
+    @state = options.delete(:specified_initial_state) || initial_state
+    super
   end
 
   def initial_state
@@ -20,11 +21,8 @@ class HexSpace
   def draw(x_offset,y_offset)
     ResourceBundle.hex_tiles[state].draw(x_offset+x,y_offset+y,z)
   end
-  def register_click
-    self.state += 1
-  end
+
   def state
     @state % ResourceBundle.hex_tiles.size
   end
-  attr_writer :state
 end
