@@ -1,6 +1,6 @@
 class HexBoard < Widget
   include ResourceBundle
-  def initialize(width,height,x,y,z,columns,rows,window, initial_hex_state)
+  def initialize(x,y,z,width,height,columns,rows,window, initial_hex_state)
     super(x,y,z,width,height,window)
     @columns, @rows =
      columns,  rows
@@ -57,7 +57,7 @@ class HexBoard < Widget
 
   def register_click(x,y)
     hex = hex_at(x,y)
-    hex.state = @window.hex_palette.state_selected if hex && @window.hex_palette.state_selected
+    hex.state = @window.hex_palette.state_selected.state if hex && @window.hex_palette.state_selected
   end
 
   def r(p); ChunkyPNG::Color.r(p); end

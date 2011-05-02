@@ -165,5 +165,20 @@ class ResourceBuilder
       end
       hexes
     end
+
+    def create_counter_set_from_files(directory, extension, output_file)
+      all_counters = Dir.glob("#{directory}/*.#{extension}")
+      counters     = all_counters.reject{|file|file =~ /-disabled/ || file =~ /blank/}.map do |file|
+        disabled_name = file.sub(".#{extension}","-disabled.#{extension}")
+        [file,all_counters.include?(disabled_name) ? disabled_name : file ]
+      end
+      counter_tiles = counters.inject(ImageList.new) do |row_set, counter_files|
+        row_set << counter_files.inject(ImageList.new) do |row, file|
+          row << Image.read(file).first
+          row
+        end.append(false)
+        row_set
+      end.append(true).write("#{output_file}.png")
+    end
   end
 end

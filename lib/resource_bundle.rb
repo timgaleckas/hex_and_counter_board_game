@@ -1,15 +1,18 @@
 module ResourceBundle
-  HEX_WIDTH    = 100
-  HEX_HEIGHT   = 100
+  HEX_WIDTH      = 100
+  HEX_HEIGHT     = 100
+  COUNTER_WIDTH  = 48
+  COUNTER_HEIGHT = 48
   IMAGES_DIR   = 'resources/images'
   TILE_SET_DIR = 'resources/tile_sets'
   class << self
-    def load(window, tile_set)
-      @window = window
-      @hex_tiles = nil
-      @tile_set = tile_set
+    def load(window, tile_set='default', counter_set='default')
+      @window      = window
+      @hex_tiles   = nil
+      @tile_set    = tile_set
+      @counter_set = counter_set
       #eager load
-      [hex_tiles,cursor]
+      [hex_tiles,counter_tiles,cursor]
     end
     def tile_set=(tile_set)
       load(@window,tile_set)
@@ -17,6 +20,11 @@ module ResourceBundle
     def hex_tiles
       return @hex_tiles if @hex_tiles
       @hex_tiles = Gosu::Image.load_tiles(@window, "resources/tile_sets/#{@tile_set}/hexes.png", HEX_WIDTH, HEX_HEIGHT, true)
+    end
+
+    def counter_tiles
+      return @counter_tiles if @counter_tiles
+      @counter_tiles = Gosu::Image.load_tiles(@window, "resources/counter_sets/#{@counter_set}.png", COUNTER_WIDTH, COUNTER_HEIGHT, true).each_slice(2).to_a
     end
 
     def hex_check_box;   @hex_uncheck  ||= Gosu::Image.new(@window, 'resources/images/hex_check_box.png');     end
