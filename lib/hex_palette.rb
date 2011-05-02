@@ -9,7 +9,7 @@ class HexPalette < Widget
       @selected ? ResourceBundle.hex_check_box.draw(x,y,z) :
                   ResourceBundle.hex_uncheck_box.draw(x,y,z)
     end
-    def mouse_click(opts)
+    def mouse_down(opts)
       @palette.click_selector(self)
       true
     end
@@ -53,13 +53,5 @@ class HexPalette < Widget
       end
     end
     @hexes
-  end
-  def mouse_click(opts={})
-    ResourceBundle.tile_set = 'tile_set_1'
-    true
-  end
-  def mouse_double_click(opts={})
-    ResourceBundle.tile_set = 'default'
-    true
   end
 end
