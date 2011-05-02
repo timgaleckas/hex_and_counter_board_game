@@ -21,7 +21,8 @@ class HexBoard < Widget
   def build_column_for_row(column, row)
     x = column*column_width
     y = (row*row_height)+(((column%2)!=0) ? 0 : row_height/2)
-    @hexes[row][column] = HexSpace.new(self, x, y, @z+1) unless row==@rows-1 && (column%2)==0
+    hex_space = HexSpace.new(self, x, y, @z+1)
+    @hexes[row][column] = hex_space unless row==@rows-1 && (column%2)==0
   end
   def clipped_draw
     b=ResourceBundle.background

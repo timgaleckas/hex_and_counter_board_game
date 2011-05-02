@@ -136,8 +136,8 @@ class ResourceBuilder
       y1 = options[:trim_top]     || 0
       x2 = options[:trim_right]   || 0
       y2 = options[:trim_bottom]  || 0
-      w =  options[:hex_width]    || 100
-      h =  options[:hex_height]   || 100
+      w =  options[:hex_width]    || HEX_WIDTH
+      h =  options[:hex_height]   || HEX_HEIGHT
       first_row_short = options[:first_row_short] #the first row of tiles starts off _-_-_ instead of -_-_-_
       image = Image.read(file_name).first.rotate!(r)
       image.crop!(x1,y1,image.columns-x1-x2,image.rows-y1-y2)
@@ -148,7 +148,7 @@ class ResourceBuilder
         current_x = 0
         y_offset = first_row_short
         while current_x+w < image.columns+10
-          row << image.excerpt(current_x,current_y+(y_offset ? h/2 : 0),w,h).resize!(100,100)
+          row << image.excerpt(current_x,current_y+(y_offset ? h/2 : 0),w,h).resize!(HEX_HEIGHT,HEX_WIDTH)
           current_x += 0.76*w
           y_offset = !y_offset
         end
