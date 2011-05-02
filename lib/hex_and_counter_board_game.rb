@@ -7,7 +7,7 @@ class HexAndCounterBoardGame < Gosu::Window
       :initial_hex_state => 0
     }.merge(options)
     @width, @height = Gosu.screen_width, Gosu.screen_height
-    super(@width, @height, false)
+    super(@width, @height, true)
     self.caption = "Hex-and-Counter Board"
     ResourceBundle.load(self,options[:tile_set])
     @input_handler = InputHandler.new(self)
@@ -15,6 +15,7 @@ class HexAndCounterBoardGame < Gosu::Window
     @close_button  = CloseButton.new( @width-50,    0,  10,  50,   50, self)
     @hex_palette   = HexPalette.new(  @width-600,  50,  10, 600,  300, self)
     @counter_tray  = CounterTray.new( @width-600, 350,  10, 600,  650, self)
+    @input_handler.register_input_client(@close_button)
     @input_handler.register_input_client(@hex_board)
     @input_handler.register_input_client(@hex_palette)
   end
