@@ -35,4 +35,8 @@ class HexAndCounterBoardGame < Gosu::Window
     @hex_board.update
     @hex_palette.update
   end
+
+  def button_down(id)
+    exit if id == Gosu::KbEscape
+  end
 end
