@@ -3,7 +3,7 @@ class HexBoard < Widget
   def initialize(width,height,x,y,z,columns,rows,window, initial_hex_state)
     super(x,y,z,width,height,window)
     @columns, @rows, @initial_hex_state =
-     columns,  rows,  initial_hex_state
+      columns,  rows,  initial_hex_state
     @hexes = Array.new(@rows)
     (0..(@rows-1)).each { |row| build_row(row) }
     @x_offset = x_overflow ? -1 * x_overflow/2 : 0
@@ -14,16 +14,17 @@ class HexBoard < Widget
 
   def build_row(row)
     @hexes[row]=Array.new(@columns)
-    (0..(@columns-1)).each do |column|
-      x = column*column_width
-      y = (row*row_height)+(((column%2)!=0) ? 0 : row_height/2)
-      state = (@initial_hex_state == :rolling) ?
-        row*@columns+column :
-        @initial_hex_state
-      @hexes[row][column] = HexSpace.new(self, x, y, @z+1, state) unless row==@rows-1 && (column%2)==0
-    end
+    (0..(@columns-1)).each { |column| build_column_for_row(column, row) }
   end
 
+  def build_column_for_row(column, row)
+    x = column*column_width
+    y = (row*row_height)+(((column%2)!=0) ? 0 : row_height/2)
+    state = (@initial_hex_state == :rolling) ?
+      row*@columns+column :
+      @initial_hex_state
+    @hexes[row][column] = HexSpace.new(self, x, y, @z+1, state) unless row==@rows-1 && (column%2)==0
+  end
   def clipped_draw
     b=ResourceBundle.background
     b.draw(@x,@y,@z,@width.to_f/b.width, @height.to_f/b.height)
