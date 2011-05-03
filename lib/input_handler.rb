@@ -26,6 +26,9 @@ class InputHandler
     h = opts[:height] || client.height
     e = opts[:event]  || :all
     @input_clients << InputClientRecord.new(x,y,x+w,y+h,z,client,e)
+    if client.respond_to?(:child_input_clients)
+      client.child_input_clients.each{|c|register_input_client(c,opts)}
+    end
   end
 
   def deregister_clients(*clients)

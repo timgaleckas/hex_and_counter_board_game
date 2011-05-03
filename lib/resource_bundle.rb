@@ -21,7 +21,9 @@ module ResourceBundle
       return @hex_tiles if @hex_tiles
       @hex_tiles = Gosu::Image.load_tiles(@window, "resources/tile_sets/#{@tile_set}/hexes.png", HEX_WIDTH, HEX_HEIGHT, true)
     end
-
+    def available_tile_sets
+      Dir.glob("resources/tile_sets/*/hexes.png").map{|n|n.match(/^resources\/tile_sets\/(.*)\/hexes.png$/)[1]}
+    end
     def counter_tiles
       return @counter_tiles if @counter_tiles
       @counter_tiles = Gosu::Image.load_tiles(@window, "resources/counter_sets/#{@counter_set}.png", COUNTER_WIDTH, COUNTER_HEIGHT, true).each_slice(2).to_a

@@ -6,7 +6,7 @@ class Widget
   end
   attr_reader :x, :y, :z, :width, :height, :window
   def draw
-    @window.clip_to(@x, @y, @width, @height) do
+    window.clip_to(x, y, width, height) do
       clipped_draw
     end
   end

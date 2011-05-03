@@ -11,19 +11,33 @@ class HexAndCounterBoardGame < Gosu::Window
     self.caption = "Hex-and-Counter Board"
     ResourceBundle.load(self,options.delete(:tile_set))
     @input_handler = InputHandler.new(self)
+    build_menu
     @hex_board     = HexBoard.new(    0, 25, 10, @width-600, @height-25, self, options)
-    @menu          = Menu.new(        @width-600,  25,  99, 600,   25, self)
-    @close_button  = CloseButton.new( @width -25,  25,  10,  25,   25, self)
-    @hex_palette   = HexPalette.new(  @width-600,  50,  10, 600,  375, self, :options=>menu_options)
+    @hex_palette   = HexPalette.new(  @width-600,  50,  10, 600,  375, self)
     @counter_tray  = CounterTray.new( @width-600, 425,  10, 600,  @height-425, self)
-    @input_handler.register_input_client(@close_button)
     @input_handler.register_input_client(@hex_board)
     @input_handler.register_input_client(@hex_palette)
   end
 
-  def menu_options
-    { :tile_sets => ['default'], :piece_sets => ['default'],
-      :exit => nil }
+  def build_menu
+    @menu          = Menu.new(        @width-600,  25,  99, 600,   25, self, :direction=>:horizontal, :display=>true)
+    window = self
+    tile_sets_sub_menu  = @menu.add_item('Tile Sets') do |menu|
+      menu.display = !menu.display
+    end
+    ResourceBundle.available_tile_sets.each do |tile_set|
+      tile_sets_sub_menu.add_item(tile_set) do
+        ResourceBundle.load(window,tile_set)
+      end
+    end
+
+    piece_sets_sub_menu = @menu.add_item('Piece Sets') do |menu|
+      menu.display = !menu.display
+    end
+    exit_menu_item = @menu.add_item('Exit') do
+      window.close
+    end
+    @input_handler.register_input_client(@menu)
   end
 
   attr_reader :input_handler, :hex_palette
@@ -31,7 +45,7 @@ class HexAndCounterBoardGame < Gosu::Window
   def draw
     ResourceBundle.cursor.draw(self.mouse_x,self.mouse_y,999)
     @hex_board.draw
-    @close_button.draw
+    @menu.draw
     @hex_palette.draw
     @counter_tray.draw
   end
@@ -43,6 +57,6 @@ class HexAndCounterBoardGame < Gosu::Window
   end
 
   def button_down(id)
-    exit if id == Gosu::KbEscape
+    close if id == Gosu::KbEscape
   end
 end
