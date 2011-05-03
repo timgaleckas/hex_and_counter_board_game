@@ -7,7 +7,7 @@ class HexAndCounterBoardGame < Gosu::Window
       :initial_hex_state => 0
     }.merge(options)
     @width, @height = Gosu.screen_width, Gosu.screen_height
-    super(@width, @height, true)
+    super(@width, @height, false)
     self.caption = "Hex-and-Counter Board"
     ResourceBundle.load(self,options.delete(:tile_set))
     @input_handler = InputHandler.new(self)
@@ -23,7 +23,8 @@ class HexAndCounterBoardGame < Gosu::Window
     @menu          = Menu.new(        @width-600,  25,  99, 600,   25, self, :direction=>:horizontal, :display=>true)
     window = self
     tile_sets_sub_menu  = @menu.add_item('Tile Sets') do |menu|
-      menu.display = !menu.display
+      @menu.items.each{|i|i.undisplay_all}
+      menu.display = true
     end
     ResourceBundle.available_tile_sets.each do |tile_set|
       tile_sets_sub_menu.add_item(tile_set) do
@@ -31,10 +32,19 @@ class HexAndCounterBoardGame < Gosu::Window
       end
     end
 
-    piece_sets_sub_menu = @menu.add_item('Piece Sets') do |menu|
-      menu.display = !menu.display
+    counter_sets_sub_menu = @menu.add_item('Counter Sets') do |menu|
+      @menu.items.each{|i|i.undisplay_all}
+      menu.display = true
     end
-    exit_menu_item = @menu.add_item('Exit') do
+    ResourceBundle.available_counter_sets.each do |counter_set|
+      counter_sets_sub_menu.add_item(counter_set) do
+        puts counter_set
+      end
+    end
+    @menu.add_item('_____') do
+      @menu.items.each{|i|i.undisplay_all}
+    end
+    @menu.add_item('Exit') do
       window.close
     end
     @input_handler.register_input_client(@menu)

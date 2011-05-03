@@ -2,6 +2,7 @@ class Menu < Widget
   include Gosu
 
   attr_accessor :display
+  attr_reader   :items
   X_PADDING = 20
   Y_PADDING = 10
   def initialize(x,y,z,width,height,window,options={})
@@ -71,6 +72,10 @@ class Menu < Widget
     Menu.new(item_x,item_y,z,nil,height,window,:title=>title,:action=>action,:insertion_point=>[item_x,item_y]).tap{|sm|@items << sm}
   end
   def child_input_clients
-    @items
+    @display ? @items : []
+  end
+  def undisplay_all
+    @display = false
+    @items.each{|i|i.undisplay_all}
   end
 end
