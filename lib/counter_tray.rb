@@ -9,6 +9,9 @@ class CounterTray < Widget
     def clipped_draw
       ResourceBundle.counter_tiles[@counter_state][0].draw(x,y,z+1)
     end
+    def mouse_down(options)
+      puts self.inspect
+    end
   end
   def initialize(x,y,z,width,height,window,options={})
     super
@@ -26,7 +29,9 @@ class CounterTray < Widget
   def clipped_draw
     b=ResourceBundle.background
     b.draw(x,y,z,width.to_f/b.width, height.to_f/b.height)
-    @counter_selectors.each{|cs|cs.draw}
+  end
+  def child_views
+    @counter_selectors
   end
 end
 
