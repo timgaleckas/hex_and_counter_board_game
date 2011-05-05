@@ -35,7 +35,6 @@ class HexPalette < Widget
     number_of_hexes_per_row = (width / (HEX_WIDTH + 20)).floor
     xs = (1..number_of_hexes_per_row-1).map{|n| (((n.to_f/number_of_hexes_per_row)*width)-(HEX_WIDTH/2)).floor}
     xs = xs.map{|an_x|an_x+x}
-    @window.input_handler.deregister_clients(*@hex_selectors) if @hex_selectors
     @hex_selectors = []
     palette = self
     current_y = y+20
@@ -47,10 +46,12 @@ class HexPalette < Widget
       end
       current_x      =  xs[x_index]
       selector       =  Selector.new(    current_x,current_y,z+2,HEX_WIDTH,HEX_HEIGHT, window, :palette=>self, :state=>index)
-      window.input_handler.register_input_client(selector)
       @hex_selectors << selector
       x_index += 1
     end
     @hex_selectors
+  end
+  def child_views
+    @hex_selectors || []
   end
 end

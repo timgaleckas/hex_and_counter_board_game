@@ -97,23 +97,25 @@ class InputHandler
   def register_event(event, opts={})
     x = opts[:x]
     y = opts[:y]
-    clients_to_check = @input_clients.dup
-    clients_to_check.each do |client_record|
-      if client_record.client.respond_to?(:child_input_clients)
-        client_record.client.child_input_clients.each do |c|
-          clients_to_check << InputClientRecord.new(c.x,c.y,c.x+c.width,c.y+c.height,c.z,c,:all)
-          if c.respond_to?(:child_input_clients)
-            c.child_input_clients.each do |c|
-              clients_to_check << InputClientRecord.new(c.x,c.y,c.x+c.width,c.y+c.height,c.z,c,:all)
-            end
-          end
-        end
-      end
-    end
+    clients_to_check = SortedSet.new
+    @input_clients.each{|v|something(v.client,clients_to_check,x,y)}
     clients_to_check.each do |i|
       x1,y1,x2,y2,z,client,accepted_event = i.x1, i.y1, i.x2, i.y2, i.z, i.client, i.e
       if x1 < x && x2 > x && y1 < y && y2 > y && (accepted_event==event||accepted_event==:all) && client.respond_to?(event)
         return if client.send(event,opts)
+      end
+    end
+    nil
+  end
+
+  private
+
+  def something(c,records,x,y)
+    if c.display 
+      x1, y1, x2, y2 = c.x,c.y,c.x+c.width,c.y+c.height
+      if x1 < x && x2 > x && y1 < y && y2 > y
+        records << InputClientRecord.new(c.x,c.y,c.x+c.width,c.y+c.height,c.z,c,:all)
+        c.child_views.each{|v|something(v,records,x,y)}
       end
     end
   end

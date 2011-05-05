@@ -60,7 +60,7 @@ class HexBoard < Widget
 
   def register_click(x,y)
     hex = hex_at(x,y)
-    hex.state = @window.hex_palette.state_selected.state if hex && @window.hex_palette.state_selected
+    hex.state = parent_view.hex_palette.state_selected.state if hex && parent_view.hex_palette.state_selected
   end
 
   def r(p); ChunkyPNG::Color.r(p); end
