@@ -8,6 +8,7 @@ class Menu < Widget
   Y_PADDING = 16
 
   def initialize(x,y,z,width,height,window,options={})
+    @items     = []
     @title               = options.delete(:title)
     @action              = options.delete(:action)
     @insertion_direction = options.delete(:direction)       || :vertical
@@ -20,12 +21,14 @@ class Menu < Widget
     insertion_x += self.width  if @title && @insertion_direction == :horizontal
     insertion_y += self.height if @title && @insertion_direction == :vertical
     @insertion_point     = [insertion_x,insertion_y]
-    @items     = []
   end
   def mouse_down(options)
     @action.call(self) if @action
-    self.selected = !self.selected
-    false
+    self.selected = true
+  end
+  def mouse_exited(options)
+    @items.each{|i|i.selected = false}
+    selected = false
   end
   def image
     return nil unless @title
@@ -57,14 +60,14 @@ class Menu < Widget
     parent.nil? || parent.title.nil? || parent.selected
   end
   def height
-    if self.selected && @items.last
+    if (selected && @items.last) || @items.detect{|i|i.selected}
       @items.map{|i|i.y+i.height}.max - self.y
     else
       super
     end
   end
   def width
-    if self.selected && @items.last
+    if (selected && @items.last) || @items.detect{|i|i.selected}
       @items.map{|i|i.x+i.width}.max - self.x
     else
       super

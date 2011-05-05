@@ -5,6 +5,7 @@ class InputHandler
     @input_clients  = SortedSet.new
     @down_events    = {}
     @click_events   = {}
+    @mouse_over     = []
   end
 
   class InputClientRecord
@@ -34,6 +35,18 @@ class InputHandler
 
   def update
     @mouse_event = MouseEvent.new(@window)
+    mouse_currently_over = SortedSet.new
+    @input_clients.each do |v|
+      find_currently_over_from_client(v.client,mouse_currently_over,@mouse_event.x,@mouse_event.y)
+    end
+    mouse_currently_over = mouse_currently_over.map{|e|e.client}
+    mouse_exited  = @mouse_over - mouse_currently_over
+    mouse_entered = mouse_currently_over - @mouse_over
+    @mouse_over   = mouse_currently_over
+
+    mouse_exited.each{  |client| mouse_exited!(client)  }
+    mouse_entered.each{ |client| mouse_entered!(client) }
+
     MOUSE_BUTTONS.each do |button|
       if @window.button_down?(button) && @down_events[button].nil?
         mouse_down!(button)
@@ -94,11 +107,21 @@ class InputHandler
     register_event(:mouse_double_click, {:button=>button,:x=>mouse_event.x,:y=>mouse_event.y} )
   end
 
+  def mouse_entered!(client)
+    client.send(:mouse_entered,{}) if client.respond_to?(:mouse_entered)
+  end
+
+  def mouse_exited!(client)
+    client.send(:mouse_exited,{}) if client.respond_to?(:mouse_exited)
+  end
+
   def register_event(event, opts={})
     x = opts[:x]
     y = opts[:y]
     clients_to_check = SortedSet.new
-    @input_clients.each{|v|something(v.client,clients_to_check,x,y)}
+    @input_clients.each do |v|
+      find_currently_over_from_client(v.client,clients_to_check,x,y)
+    end
     clients_to_check.each do |i|
       x1,y1,x2,y2,z,client,accepted_event = i.x1, i.y1, i.x2, i.y2, i.z, i.client, i.e
       if x1 < x && x2 > x && y1 < y && y2 > y && (accepted_event==event||accepted_event==:all) && client.respond_to?(event)
@@ -110,12 +133,13 @@ class InputHandler
 
   private
 
-  def something(c,records,x,y)
-    if c.display 
+  def find_currently_over_from_client(client,set_to_fill,x,y)
+    c = client
+    if c.display
       x1, y1, x2, y2 = c.x,c.y,c.x+c.width,c.y+c.height
       if x1 < x && x2 > x && y1 < y && y2 > y
-        records << InputClientRecord.new(c.x,c.y,c.x+c.width,c.y+c.height,c.z,c,:all)
-        c.child_views.each{|v|something(v,records,x,y)}
+        set_to_fill << InputClientRecord.new(c.x,c.y,c.x+c.width,c.y+c.height,c.z,c,:all)
+        c.child_views.each{|child_view|find_currently_over_from_client(child_view,set_to_fill,x,y)}
       end
     end
   end
