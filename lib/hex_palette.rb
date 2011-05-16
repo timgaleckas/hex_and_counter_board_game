@@ -22,7 +22,8 @@ class HexPalette < Widget
   end
   def initialize(*a)
     super
-    @height = hex_selectors.last.y + hex_selectors.last.height - y
+    hex_selectors
+    grow
   end
   def clipped_draw
     b=ResourceBundle.background
@@ -50,6 +51,7 @@ class HexPalette < Widget
       end
       current_x      =  xs[x_index]
       selector       =  Selector.new(    current_x,current_y,z+2,HEX_WIDTH,HEX_HEIGHT, window, :palette=>self, :state=>index)
+      selector.parent_view = self
       @hex_selectors << selector
       x_index += 1
     end

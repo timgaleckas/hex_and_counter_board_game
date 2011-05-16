@@ -8,12 +8,13 @@ class Widget
      x,  y,  z,  width,  height,  window,  SortedSet.new
     @display = options.delete(:display)
     @draggable = options.delete(:draggable)
-    @x_offset = options.delete(:x_offset) || 0
-    @y_offset = options.delete(:y_offset) || 0
+    @x_offset = options.delete(:x_offset)
+    @y_offset = options.delete(:y_offset)
     initial_child_views = options.delete(:child_views) || []
     initial_child_views.each{|v|add_child_view v}
   end
-  attr_reader   :x, :y, :z, :width, :height, :window, :child_views, :x_offset, :y_offset
+  attr_writer   :x_offset, :y_offset
+  attr_reader   :x, :y, :z, :width, :height, :window, :child_views
   def draggable?; @draggable; end
   attr_accessor :display, :parent_view
   def drag_initiated(opts); @display = false; end
@@ -53,12 +54,10 @@ class Widget
       super
     end
   end
-  def x_offset=(x_o)
-    @x_offset=x_o
-    child_views.each{|v|v.x_offset=x_o}
-  end
-  def y_offset=(y_o)
-    @y_offset=y_o
-    child_views.each{|v|v.y_offset=y_o}
+  def x_offset; @x_offset || (parent_view ? parent_view.x_offset : 0); end
+  def y_offset; @y_offset || (parent_view ? parent_view.y_offset : 0); end
+  def grow
+    @height = ([height]+child_views.map{|v|v.grow;v.y+v.height-y}).max
+    @width  = ([width] +child_views.map{|v|v.grow;v.x+v.width-x}).max
   end
 end
