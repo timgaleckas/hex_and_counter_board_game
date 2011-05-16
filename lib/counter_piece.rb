@@ -14,5 +14,9 @@ class CounterPiece < Widget
 
   def mouse_click(*a)
     @side = @side==0 ? 1 : 0
+    true
+  end
+  def mouse_down(*a)
+    true
   end
 end

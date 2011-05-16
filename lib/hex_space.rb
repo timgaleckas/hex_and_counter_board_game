@@ -30,7 +30,7 @@ class HexSpace < Widget
     if options[:dragged_widget].class == HexPalette::Selector
       @state = options[:dragged_widget].state
     elsif options[:dragged_widget].class == CounterTray::CounterSelector
-      self.piece = CounterPiece.new(x+(width/2)-(CounterPiece::WIDTH/2),y+(height/2)-(CounterPiece::HEIGHT/2),z+99,width,height,window,:state=>options[:dragged_widget].state)
+      self.piece = CounterPiece.new(x+(width/2)-(CounterPiece::WIDTH/2),y+(height/2)-(CounterPiece::HEIGHT/2),z+99,CounterPiece::WIDTH,CounterPiece::HEIGHT,window,:state=>options[:dragged_widget].state)
     elsif options[:dragged_widget].class == CounterPiece
       self.piece = options[:dragged_widget]
     end
