@@ -8,8 +8,8 @@ class HexBoard < Widget
     super
     @hexes = Array.new(@rows)
     (0..(@rows-1)).each { |row| build_row(row) }
-    @x_offset = x_overflow ? -1 * x_overflow/2 : 0
-    @y_offset = y_overflow ? -1 * y_overflow/2 : 0
+    @x_scroll_offset = x_overflow ? -1 * x_overflow/2 : 0
+    @y_scroll_offset = y_overflow ? -1 * y_overflow/2 : 0
   end
 
   attr_accessor :hexes
@@ -21,14 +21,18 @@ class HexBoard < Widget
 
   def build_column_for_row(column, row)
     x = column*column_width
-    y = (row*row_height)+(((column%2)!=0) ? 0 : row_height/2)
+    y = (row*row_height)+(((column%2)!=0) ? 0 : row_height/2)+25
     hex_space = HexSpace.new(x, y, @z+1,HEX_WIDTH,HEX_HEIGHT,window,:board=>self)
     @hexes[row][column] = hex_space unless row==@rows-1 && (column%2)==0
   end
   def clipped_draw
     b=ResourceBundle.background
     b.draw(@x,@y,@z,@width.to_f/b.width, @height.to_f/b.height)
-    hexes.flatten.compact.each{|hex|hex.draw(@x+@x_offset,@y+@y_offset)}
+    hexes.flatten.compact.each do |hex|
+      hex.x_offset = x_offset + @x_scroll_offset
+      hex.y_offset = y_offset + @y_scroll_offset
+      hex.draw
+    end
   end
 
   def update
@@ -41,6 +45,10 @@ class HexBoard < Widget
     move_board_right! if @window.mouse_x < @x + border_width
     move_board_down!  if @window.mouse_y < @y + border_width
     move_board_up!    if @window.mouse_y > @y + @height - border_width
+    child_views.each do |view|
+      view.x_offset=@x_scroll_offset
+      view.y_offset=@y_scroll_offset
+    end
   end
 
   def mouse_down(opts)
@@ -52,11 +60,15 @@ class HexBoard < Widget
     hex.drag_dropped(options)
   end
 
+  def child_views
+    super+@hexes.flatten.compact.map{|h|h.piece}.compact
+  end
+
   private
-  def move_board_up!;    @y_offset -= [10,(@y_offset+y_overflow).abs].min if y_overflow > 0; end
-  def move_board_down!;  @y_offset += [10,@y_offset.abs].min              if y_overflow > 0; end
-  def move_board_left!;  @x_offset -= [10,(@x_offset+x_overflow).abs].min if x_overflow > 0; end
-  def move_board_right!; @x_offset += [10,@x_offset.abs].min              if x_overflow > 0; end
+  def move_board_up!;    @y_scroll_offset -= [10,(@y_scroll_offset+y_overflow).abs].min if y_overflow > 0; end
+  def move_board_down!;  @y_scroll_offset += [10,@y_scroll_offset.abs].min              if y_overflow > 0; end
+  def move_board_left!;  @x_scroll_offset -= [10,(@x_scroll_offset+x_overflow).abs].min if x_overflow > 0; end
+  def move_board_right!; @x_scroll_offset += [10,@x_scroll_offset.abs].min              if x_overflow > 0; end
 
   def column_width;      ((HEX_WIDTH*3)/4)-3;                      end
   def row_height;        HEX_HEIGHT-3;                             end
@@ -73,8 +85,8 @@ class HexBoard < Widget
   def b(p); ChunkyPNG::Color.b(p); end
 
   def hex_at(x,y)
-    relative_x           = x - @x - @x_offset
-    relative_y           = y - @y - @y_offset
+    relative_x           = x - @x - @x_scroll_offset
+    relative_y           = y - @y - @y_scroll_offset
     column = (relative_x                        / column_width).floor
     offset_due_to_column = column.even? ? (row_height/2) : 0
     row    = ( (relative_y - offset_due_to_column) / row_height  ).floor

@@ -4,17 +4,21 @@ class Widget
     options = {
       :display => true
     }.merge(options)
-    @x, @y, @z, @width, @height, @window, @child_views,   @display,                  @draggable =
-     x,  y,  z,  width,  height,  window,  SortedSet.new,  options.delete(:display),  options.delete(:draggable)
+    @x, @y, @z, @width, @height, @window, @child_views =
+     x,  y,  z,  width,  height,  window,  SortedSet.new
+    @display = options.delete(:display)
+    @draggable = options.delete(:draggable)
+    @x_offset = options.delete(:x_offset) || 0
+    @y_offset = options.delete(:y_offset) || 0
   end
   attr_reader   :x, :y, :z, :width, :height, :window, :child_views
   def draggable?; @draggable; end
-  attr_accessor :display, :parent_view
+  attr_accessor :display, :parent_view, :x_offset, :y_offset
   def drag_initiated(opts); @display = false; end
   def drag_ended(opts);     @display = true;  end
   def draw
     if display
-      window.clip_to(x, y, width, height) do
+      window.clip_to(x+x_offset, y+y_offset, width, height) do
         clipped_draw
         child_views.each do |child_view|
           child_view.draw

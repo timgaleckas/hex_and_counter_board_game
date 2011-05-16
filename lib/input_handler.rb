@@ -21,12 +21,12 @@ class InputHandler
   end
 
   def register_input_client(client,opts={})
-    x = opts[:x] || client.x
-    y = opts[:y] || client.y
-    z = opts[:z] || client.z
-    w = opts[:width]  || client.width
-    h = opts[:height] || client.height
-    e = opts[:event]  || :all
+    x   = opts[:x]        || client.x
+    y   = opts[:y]        || client.y
+    z   = opts[:z]        || client.z
+    w   = opts[:width]    || client.width
+    h   = opts[:height]   || client.height
+    e   = opts[:event]    || :all
     @input_clients << InputClientRecord.new(x,y,x+w,y+h,z,client,e)
   end
 
@@ -196,9 +196,9 @@ class InputHandler
   def find_currently_over_from_client(client,set_to_fill,x,y)
     c = client
     if c.display
-      x1, y1, x2, y2 = c.x,c.y,c.x+c.width,c.y+c.height
+      x1, y1, x2, y2 = c.x+c.x_offset,c.y+c.y_offset,c.x+c.width+c.x_offset,c.y+c.height+c.y_offset
       if x1 < x && x2 > x && y1 < y && y2 > y
-        set_to_fill << InputClientRecord.new(c.x,c.y,c.x+c.width,c.y+c.height,c.z,c,:all)
+        set_to_fill << InputClientRecord.new(c.x+c.x_offset,c.y+c.y_offset,c.x+c.width+c.x_offset,c.y+c.height+c.y_offset,c.z,c,:all)
         c.child_views.each{|child_view|find_currently_over_from_client(child_view,set_to_fill,x,y)}
       end
     end
