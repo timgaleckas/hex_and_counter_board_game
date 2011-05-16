@@ -1,8 +1,8 @@
 module ResourceBundle
   HEX_WIDTH      = 80
   HEX_HEIGHT     = 80
-  COUNTER_WIDTH  = 48
-  COUNTER_HEIGHT = 48
+  COUNTER_WIDTH  = 51
+  COUNTER_HEIGHT = 51
   IMAGES_DIR   = 'resources/images'
   TILE_SET_DIR = 'resources/tile_sets'
   class << self

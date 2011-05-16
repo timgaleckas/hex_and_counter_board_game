@@ -46,6 +46,7 @@ class HexSpace < Widget
       p.instance_variable_set('@y', y+(height/2)-(CounterPiece::HEIGHT/2))
       p.hex_space.piece=nil if p.hex_space
       p.hex_space = self
+      p.parent_view = self
     end
     @piece = p
   end

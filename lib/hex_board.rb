@@ -28,11 +28,6 @@ class HexBoard < Widget
     end
   end
 
-  def clipped_draw
-    b=ResourceBundle.background
-    b.draw(x+x_offset,y+y_offset,z,width.to_f/b.width, height.to_f/b.height)
-  end
-
   private
   def column_width;      ((HEX_WIDTH*3)/4)-3;                      end
   def row_height;        HEX_HEIGHT-3;                             end

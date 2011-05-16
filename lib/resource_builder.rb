@@ -178,6 +178,7 @@ class ResourceBuilder
             self.background_color='#BED8F1'
           }
           canvas = canvas.raise(3,3)
+          canvas = canvas.composite(image, Magick::CenterGravity, Magick::OverCompositeOp)
           row << canvas
           row
         end.append(false)
