@@ -5,6 +5,7 @@ class HexSpace < Widget
   end
   attr_reader :board
   attr_writer :state
+  attr_accessor :piece
 
   def initialize(x,y,z,width,height,window,options={})
     @board = options.delete(:board)
@@ -20,9 +21,16 @@ class HexSpace < Widget
 
   def draw(x_offset,y_offset)
     ResourceBundle.hex_tiles[state].draw(x_offset+x,y_offset+y,z)
+    self.piece.draw if self.piece
   end
 
   def state
     @state % ResourceBundle.hex_tiles.size
+  end
+
+  def drag_dropped(options)
+    if options[:dragged_widget].class == HexPalette::Selector
+      @state = options[:dragged_widget].state
+    end
   end
 end

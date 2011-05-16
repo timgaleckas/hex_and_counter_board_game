@@ -5,7 +5,7 @@ class HexPalette < Widget
         options.delete(:state),
         options.delete(:palette),
         !!options.delete(:selected)
-      super
+      super(x,y,z,width,height,window,{:draggable=>true}.merge(options))
     end
     attr_accessor :selected
     attr_reader   :palette, :state

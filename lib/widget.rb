@@ -2,14 +2,16 @@ class Widget
   include ResourceBundle
   def initialize(x,y,z,width,height,window,options={})
     options = {
-      :display => true,
-      :child_views_clipped => true
+      :display => true
     }.merge(options)
-    @x, @y, @z, @width, @height, @window, @child_views,   @display =
-     x,  y,  z,  width,  height,  window,  SortedSet.new,  options.delete(:display)
+    @x, @y, @z, @width, @height, @window, @child_views,   @display,                  @draggable =
+     x,  y,  z,  width,  height,  window,  SortedSet.new,  options.delete(:display),  options.delete(:draggable)
   end
   attr_reader   :x, :y, :z, :width, :height, :window, :child_views
+  def draggable?; @draggable; end
   attr_accessor :display, :parent_view
+  def drag_initiated(opts); @display = false; end
+  def drag_ended(opts);     @display = true;  end
   def draw
     if display
       window.clip_to(x, y, width, height) do
@@ -37,5 +39,12 @@ class Widget
   end
   def <=>(other)
     other.z <=> z
+  end
+  def method_missing(method, *args, &block)
+    if parent_view
+      parent_view.send(method, *args, &block)
+    else
+      super
+    end
   end
 end

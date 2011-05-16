@@ -15,6 +15,7 @@ class HexAndCounterBoardGame < Gosu::Window
   def draw
     @widget.draw
     ResourceBundle.cursor.draw(mouse_x,mouse_y,999)
+    input_handler.draw
   end
   def update
     input_handler.update

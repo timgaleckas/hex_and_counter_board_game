@@ -47,6 +47,11 @@ class HexBoard < Widget
     register_click(opts[:x],opts[:y])
   end
 
+  def drag_dropped(options)
+    hex = hex_at(options[:x],options[:y])
+    hex.drag_dropped(options)
+  end
+
   private
   def move_board_up!;    @y_offset -= [10,(@y_offset+y_overflow).abs].min if y_overflow > 0; end
   def move_board_down!;  @y_offset += [10,@y_offset.abs].min              if y_overflow > 0; end

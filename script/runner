@@ -10,6 +10,9 @@ ARGV.clone.options do |opts|
 
   opts.separator ""
 
+  opts.on("-r", "--resource-builder",
+          "Run with resource-builder bunle.") { Bundler.require(:resource_builder) }
+
   opts.on("-h", "--help",
           "Show this help message.") { $stderr.puts opts; exit }
 

@@ -125,7 +125,6 @@ class ResourceBuilder
       begin; Image.read('resources/images/hex_overlay.png').first; rescue; create_hex_overlay; end
     end
 
-
     def create_hexes_from_map(options={})
       display       = options[:display]
       file_name     = options[:file_name]
@@ -174,7 +173,12 @@ class ResourceBuilder
       end
       counter_tiles = counters.inject(ImageList.new) do |row_set, counter_files|
         row_set << counter_files.inject(ImageList.new) do |row, file|
-          row << Image.read(file).first
+          image = Image.read(file).first
+          canvas=Magick::Image.new(image.columns+3,image.rows+3){
+            self.background_color='#BED8F1'
+          }
+          canvas = canvas.raise(3,3)
+          row << canvas
           row
         end.append(false)
         row_set
