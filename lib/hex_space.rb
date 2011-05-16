@@ -36,6 +36,10 @@ class HexSpace < Widget
     end
   end
 
+  def child_views
+    [piece].compact
+  end
+
   def piece=(p)
     if p
       p.instance_variable_set('@x', x+(width/2)-(CounterPiece::WIDTH/2))
@@ -44,5 +48,18 @@ class HexSpace < Widget
       p.hex_space = self
     end
     @piece = p
+  end
+
+  def r(p); ChunkyPNG::Color.r(p); end
+  def g(p); ChunkyPNG::Color.g(p); end
+  def b(p); ChunkyPNG::Color.b(p); end
+
+  def mouse_down(options)
+    x_in_tile = options[:x] - x - x_offset
+    y_in_tile = options[:y] - y - y_offset
+    pixel = ResourceBundle.mask.get_pixel(x_in_tile,y_in_tile)
+    return false if r(pixel) > 0 || g(pixel) > 0 || b(pixel) > 0
+    self.state = parent_view.parent_view.hex_palette.state_selected.state if parent_view.parent_view.hex_palette.state_selected
+    return true
   end
 end

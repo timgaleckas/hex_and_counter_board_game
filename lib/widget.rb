@@ -11,9 +11,9 @@ class Widget
     @x_offset = options.delete(:x_offset) || 0
     @y_offset = options.delete(:y_offset) || 0
   end
-  attr_reader   :x, :y, :z, :width, :height, :window, :child_views
+  attr_reader   :x, :y, :z, :width, :height, :window, :child_views, :x_offset, :y_offset
   def draggable?; @draggable; end
-  attr_accessor :display, :parent_view, :x_offset, :y_offset
+  attr_accessor :display, :parent_view
   def drag_initiated(opts); @display = false; end
   def drag_ended(opts);     @display = true;  end
   def draw
@@ -50,5 +50,13 @@ class Widget
     else
       super
     end
+  end
+  def x_offset=(x_o)
+    @x_offset=x_o
+    child_views.each{|v|v.x_offset=x_o}
+  end
+  def y_offset=(y_o)
+    @y_offset=y_o
+    child_views.each{|v|v.y_offset=y_o}
   end
 end
