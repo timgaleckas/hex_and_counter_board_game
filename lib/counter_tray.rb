@@ -29,5 +29,11 @@ class CounterTray < Widget
     b=ResourceBundle.background
     b.draw(x,y,z,width.to_f/b.width, height.to_f/b.height)
   end
+  def drag_dropped(options)
+    if options[:dragged_widget].class == CounterPiece
+      options[:dragged_widget].hex_space.piece = nil
+    end
+  end
+
 end
 

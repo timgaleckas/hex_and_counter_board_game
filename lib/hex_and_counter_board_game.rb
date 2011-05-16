@@ -4,7 +4,7 @@ class HexAndCounterBoardGame < Gosu::Window
     options = {
       :tile_set => 'default'
     }.merge(options)
-    super(screen_width, screen_height, false)
+    super(screen_width, screen_height, true)
     caption = "Hex-and-Counter Board"
     ResourceBundle.load(self,options.delete(:tile_set))
     @input_handler = InputHandler.new(self)
