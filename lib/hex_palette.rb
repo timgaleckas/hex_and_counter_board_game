@@ -10,9 +10,9 @@ class HexPalette < Widget
     attr_accessor :selected
     attr_reader   :palette, :state
     def clipped_draw
-      ResourceBundle.hex_tiles[state].draw(x,y,z)
-      @selected ? ResourceBundle.hex_check_box.draw(x,y,z+1) :
-                  ResourceBundle.hex_uncheck_box.draw(x,y,z+1)
+      ResourceBundle.hex_tiles[state].draw(x+x_offset,y+y_offset,z)
+      @selected ? ResourceBundle.hex_check_box.draw(x+x_offset,y+y_offset,z+1) :
+                  ResourceBundle.hex_uncheck_box.draw(x+x_offset,y+y_offset,z+1)
     end
     def mouse_down(opts)
       palette.clear_selection
@@ -20,9 +20,13 @@ class HexPalette < Widget
       true
     end
   end
+  def initialize(*a)
+    super
+    @height = hex_selectors.last.y + hex_selectors.last.height - y
+  end
   def clipped_draw
     b=ResourceBundle.background
-    b.draw(x,y,z,width.to_f/b.width, height.to_f/b.height)
+    b.draw(x+x_offset,y+y_offset,z,width.to_f/b.width, height.to_f/b.height)
     hex_selectors.each{|selector|selector.draw}
   end
   def update

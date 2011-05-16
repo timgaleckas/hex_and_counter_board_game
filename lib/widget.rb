@@ -10,6 +10,8 @@ class Widget
     @draggable = options.delete(:draggable)
     @x_offset = options.delete(:x_offset) || 0
     @y_offset = options.delete(:y_offset) || 0
+    initial_child_views = options.delete(:child_views) || []
+    initial_child_views.each{|v|add_child_view v}
   end
   attr_reader   :x, :y, :z, :width, :height, :window, :child_views, :x_offset, :y_offset
   def draggable?; @draggable; end
